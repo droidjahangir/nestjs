@@ -1,5 +1,10 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  ValidationPipe,
+} from '@nestjs/common';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 
 import { CatsModule } from './cats/cats.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
@@ -15,9 +20,15 @@ import { JackalsModule } from './jackals/jackals.module';
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
-  ]
+    
+    // custom token name for validationPipe provider
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+  ],
 })
-export class AppModule implements NestModule{
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       // .apply(cors(), helmet(), logger)  // apply multiple middleware
@@ -28,14 +39,12 @@ export class AppModule implements NestModule{
       //   'cats/(.*)',
       // )
       .forRoutes('cats');
-      // .forRoutes([CatsController, DogsController]);
-      // .forRoutes({ path: 'cats', method: RequestMethod.GET })
-
+    // .forRoutes([CatsController, DogsController]);
+    // .forRoutes({ path: 'cats', method: RequestMethod.GET })
 
     // implement functional middleware
     // consumer
     // .apply(logger)
     // .forRoutes(CatsController);
   }
-
 }

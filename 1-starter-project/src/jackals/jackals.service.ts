@@ -5,17 +5,15 @@ import { Jackals } from './interface/jackal.interface';
 export class JackalsService {
   private readonly jackals: Jackals[] = [];
 
-  private readonly cats: Jackals[] = [];
-
-  create(cat: Jackals) {
-    this.cats.push(cat);
+  create(jackal: Jackals) {
+    this.jackals.push(jackal);
   }
 
   findAll(): Jackals[] {
-    return this.cats;
+    return this.jackals;
   }
 
   findOne(id: number): Jackals {
-    return this.cats[0]
+    return this.jackals[0]
   }
 }

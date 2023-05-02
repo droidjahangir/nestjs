@@ -6,13 +6,16 @@ import {
   ParseIntPipe,
   Post,
   UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
+import Joi from 'joi';
+
 import { JackalsService } from './jackals.service';
-import { CreateJackalDto, createJackalSchema } from './dto/CreateJackal.dto';
+import { CreateJackalDto } from './dto/CreateJackal.dto';
 import { Jackals } from './interface/jackal.interface';
 import { JoiValidationPipe } from 'src/common/pipes/joivalidation.pipe';
 
-@Controller()
+@Controller('jackals')
 export class JackalsController {
   constructor(private jackalsService: JackalsService) {}
 
@@ -33,14 +36,16 @@ export class JackalsController {
     return this.jackalsService.findOne(id);
   }
 
-  @Get('schemaBasedValidation')
-  async createJackal(@Body() createJackalDto: CreateJackalDto) {
-    this.jackalsService.create(createJackalDto);
+  @Post('schemaBasedValidation')
+  async createJackal(
+    @Body(new ValidationPipe()) createJackalDto: CreateJackalDto,
+  ) {
+    return this.jackalsService.create(createJackalDto);
   }
 
-  @Get('objectBasedValidation')
-  @UsePipes(new JoiValidationPipe(createJackalSchema))
-  async validateJackalObject(@Body() createCatDto: CreateJackalDto ) {
-    this.jackalsService.create(createCatDto);
-  }
+  // @Post('objectBasedValidationJoi')
+  // @UsePipes(new JoiValidationPipe(createJackalSchema))
+  // async validateJackalObject(@Body() createCatDto: CreateJackalDto ) {
+  //   this.jackalsService.create(createCatDto);
+  // }
 }
