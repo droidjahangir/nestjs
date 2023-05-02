@@ -20,6 +20,8 @@ import { JoiValidationPipe } from 'src/common/pipes/joivalidation.pipe';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorators';
 import { LoggingInterceptor } from 'src/common/interceptor/logging.interceptor';
+import { User } from 'src/common/decorators/user.decorator';
+import { Auth } from 'src/common/decorators/auth.decorator';
 
 @Controller('jackals')
 @UseGuards(RolesGuard)
@@ -43,6 +45,29 @@ export class JackalsController {
   @Get()
   async findAll(): Promise<Jackals[]> {
     return this.jackalsService.findAll();
+  }
+
+  @Auth('admin')
+  @Get('composition')
+  async composition(): Promise<Jackals[]> {
+    return this.jackalsService.findAll();
+  }
+
+  // implement custom decorator
+  // @Get('customDecorator')
+  // async customDecorator(@User('firstName') firstName: string) {
+  //   console.log(`Hello ${firstName}`);
+  // }
+
+  // use custom decorator with pipes
+  @Get('customDecorator')
+  async customDecorator(
+    @User(new ValidationPipe({ validateCustomDecorators: true }))
+    user: {
+      name: string;
+    },
+  ) {
+    console.log(user);
   }
 
   //   pipe based validation
