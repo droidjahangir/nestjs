@@ -7,6 +7,7 @@ import {
   Post,
   SetMetadata,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -18,16 +19,23 @@ import { Jackals } from './interface/jackal.interface';
 import { JoiValidationPipe } from 'src/common/pipes/joivalidation.pipe';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorators';
+import { LoggingInterceptor } from 'src/common/interceptor/logging.interceptor';
 
 @Controller('jackals')
 @UseGuards(RolesGuard)
+
+// we can use interceptor in controller label
+// @UseInterceptors(new LoggingInterceptor())
 export class JackalsController {
   constructor(private jackalsService: JackalsService) {}
 
   @Post()
   // make role guard for this router
-  @SetMetadata('roles', ['admin'])
-  @Roles('admin')
+  // @SetMetadata('roles', ['admin'])
+  // @Roles('admin')
+
+  // interceptor
+  @UseInterceptors(LoggingInterceptor)
   async create(@Body() createCatDto: CreateJackalDto) {
     this.jackalsService.create(createCatDto);
   }
