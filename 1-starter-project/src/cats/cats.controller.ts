@@ -4,6 +4,8 @@ import {
   Get,
   Header,
   HttpCode,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Query,
@@ -16,6 +18,7 @@ import { Observable, of } from 'rxjs';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
 import { Cat } from './interfaces/cat.interface';
+import { ForbiddenException } from 'src/common/exceptions/forbidden.exceptions';
 
 @Controller('cats')
 export class CatsController {
@@ -30,8 +33,32 @@ export class CatsController {
   async findAll(): Promise<Cat[]> {
     return this.catsService.findAll();
   }
+
+  @Get('customException')
+  async findCats() {
+    // throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    try {
+      await this.catsService.findAll()
+    } catch (error) { 
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: 'This is a custom message',
+      }, HttpStatus.FORBIDDEN, {
+        cause: error
+      });
+    }
+
+    // common exception filter
+    // throw new ForbiddenException();
+
+
+    // All the built-in exceptions can also provide both an error cause and an error description using the options parameter:
+    // throw new BadRequestException('Something bad happened', { cause: new Error(), description: 'Some error description' })
+
+  }
   
 }
+
 
 // @Controller({ host: 'admin.example.com' })
 // export class AdminController {
