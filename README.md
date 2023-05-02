@@ -34,5 +34,26 @@ All the built-in exceptions can also provide both an error cause and an error de
 ```throw new BadRequestException('Something bad happened', { cause: new Error(), description: 'Some error description' })```
 
 
+### pipes
+
+A pipe is a class annotated with the `@Injectable()` decorator, which implements the `PipeTransform` interface.
+
+Pipes have two typical use cases:
+
+1. **transformation:** transform input data to the desired form (e.g., from string to integer)
+2. **validation:** evaluate input data and if valid, simply pass it through unchanged; otherwise, throw an exception
+
+
+Nest comes with nine pipes available out-of-the-box:
+
+1. ValidationPipe
+2. ParseIntPipe
+3. ParseFloatPipe
+4. ParseBoolPipe
+5. ParseArrayPipe
+6. ParseUUIDPipe
+7. ParseEnumPipe
+8. DefaultValuePipe
+9. ParseFilePipe
 
 
