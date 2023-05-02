@@ -4,9 +4,10 @@ import { APP_FILTER } from '@nestjs/core';
 import { CatsModule } from './cats/cats.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
+import { JackalsModule } from './jackals/jackals.module';
 
 @Module({
-  imports: [CatsModule],
+  imports: [CatsModule, JackalsModule],
 
   // register custom filter exception to provider for dependancy injection
   providers: [
