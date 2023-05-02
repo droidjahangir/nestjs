@@ -5,6 +5,8 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  SetMetadata,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -14,12 +16,18 @@ import { JackalsService } from './jackals.service';
 import { CreateJackalDto } from './dto/CreateJackal.dto';
 import { Jackals } from './interface/jackal.interface';
 import { JoiValidationPipe } from 'src/common/pipes/joivalidation.pipe';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorators';
 
 @Controller('jackals')
+@UseGuards(RolesGuard)
 export class JackalsController {
   constructor(private jackalsService: JackalsService) {}
 
   @Post()
+  // make role guard for this router
+  @SetMetadata('roles', ['admin'])
+  @Roles('admin')
   async create(@Body() createCatDto: CreateJackalDto) {
     this.jackalsService.create(createCatDto);
   }

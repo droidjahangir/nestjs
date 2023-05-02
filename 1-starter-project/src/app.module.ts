@@ -4,12 +4,13 @@ import {
   NestModule,
   ValidationPipe,
 } from '@nestjs/common';
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 
 import { CatsModule } from './cats/cats.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
 import { JackalsModule } from './jackals/jackals.module';
+import { RolesGuard } from './common/guards/roles.guard';
 
 @Module({
   imports: [CatsModule, JackalsModule],
@@ -25,6 +26,12 @@ import { JackalsModule } from './jackals/jackals.module';
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,
+    },
+
+    // custom guard token for this guard
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +15,9 @@ async function bootstrap() {
 
   // use global pipe
   // app.useGlobalPipes(new ValidationPipe());
+
+  // use global guard
+  // app.useGlobalGuards(new RolesGuard());
 
   await app.listen(3000);
 }
