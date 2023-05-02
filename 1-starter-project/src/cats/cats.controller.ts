@@ -11,6 +11,7 @@ import {
   Query,
   Redirect,
   Req,
+  UseFilters,
 } from '@nestjs/common';
 import { Request } from 'express';
 
@@ -19,8 +20,12 @@ import { CreateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
 import { Cat } from './interfaces/cat.interface';
 import { ForbiddenException } from 'src/common/exceptions/forbidden.exceptions';
+import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
 
 @Controller('cats')
+
+// we can use exception filter at controller label
+@UseFilters(HttpExceptionFilter)
 export class CatsController {
   constructor(private catsService: CatsService) {}
 
@@ -35,30 +40,35 @@ export class CatsController {
   }
 
   @Get('customException')
+  // @UseFilters(new HttpExceptionFilter())
+  @UseFilters(HttpExceptionFilter)
   async findCats() {
-    // throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     try {
-      await this.catsService.findAll()
-    } catch (error) { 
-      throw new HttpException({
-        status: HttpStatus.FORBIDDEN,
-        error: 'This is a custom message',
-      }, HttpStatus.FORBIDDEN, {
-        cause: error
-      });
+      //   await this.catsService.findAll()
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'This is a custom message',
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: error,
+        },
+      );
     }
+
+    // custom message
+    // throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
 
     // common exception filter
     // throw new ForbiddenException();
 
-
     // All the built-in exceptions can also provide both an error cause and an error description using the options parameter:
     // throw new BadRequestException('Something bad happened', { cause: new Error(), description: 'Some error description' })
-
   }
-  
 }
-
 
 // @Controller({ host: 'admin.example.com' })
 // export class AdminController {
@@ -69,11 +79,10 @@ export class CatsController {
 //   return 'This action adds a new cat';
 // }
 
-
 // @Get(':id')
 // findById(@Param('id') id: string): string {
 //   console.log('params ===> ', id);
-  
+
 //   return `This action returns a #${id} cat`;
 // }
 
@@ -118,7 +127,6 @@ export class CatsController {
 // getPromiseAsObservable(): Observable<any[]> {
 //   return of([]);
 // }
-
 
 //   @Get()
 //   index(): string {
